@@ -6,6 +6,8 @@ import { Upload, Download, FileText, CheckCircle, AlertCircle, ArrowLeft } from 
 import { generateSampleCSV } from '@/lib/csv-handler';
 import { Factory } from '@/lib/types';
 import Link from 'next/link';
+import { AuthGuard } from '@/components/auth-guard';
+import { mapLayoutList, mapFactoryStructure } from '@/lib/api-adapters';
 
 export default function DeveloperPage() {
     const [file, setFile] = useState<File | null>(null);
@@ -20,7 +22,7 @@ export default function DeveloperPage() {
     const fetchLayouts = () => {
         fetch('/api/layouts')
             .then(res => res.json())
-            .then(data => setLayouts(data))
+            .then(data => setLayouts(mapLayoutList(data)))
             .catch(console.error);
     };
 
@@ -70,7 +72,7 @@ export default function DeveloperPage() {
         formData.append('name', file.name.replace('.csv', ''));
 
         try {
-            const response = await fetch('/api/layouts', {
+            const response = await fetch('/api/admin/upload-csv', {
                 method: 'POST',
                 body: formData,
             });
@@ -81,8 +83,20 @@ export default function DeveloperPage() {
 
             const result = await response.json();
             setSuccess(true);
-            setPreview(result.factory);
-            setLayoutId(result.id);
+            setLayoutId(result.layout_version_id);
+            
+            // Fetch preview data
+            try {
+              const viewRes = await fetch(`/api/layouts/${result.layout_version_id}/view`);
+              if (viewRes.ok) {
+                const viewData = await viewRes.json();
+                const mapped = mapFactoryStructure(viewData);
+                setPreview(mapped.factory);
+              }
+            } catch (e) {
+              console.error('Failed to load preview', e);
+            }
+
             setFile(null);
             fetchLayouts();
         } catch (err) {
@@ -93,7 +107,8 @@ export default function DeveloperPage() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 p-8">
+        <AuthGuard requiredRole="developer">
+            <div className="min-h-screen bg-slate-50 p-8">
             <div className="mx-auto max-w-5xl space-y-8">
                 <div className="flex items-center gap-4">
                     <Link href="/">
@@ -163,7 +178,7 @@ export default function DeveloperPage() {
                                     Upload successful! Layout created.
                                 </div>
                                 {layoutId && (
-                                    <Link href={`/admin/editor?id=${layoutId}`}>
+                                    <Link href={`/editor?id=${layoutId}`}>
                                         <Button className="w-full bg-slate-900 hover:bg-slate-800">
                                             Show me the layout editor
                                         </Button>
@@ -258,7 +273,7 @@ export default function DeveloperPage() {
                                             <div className="flex justify-end gap-2 text-slate-900">
                                                 {(!l.status || l.status === 'draft' || l.status === 'rejected') && (
                                                     <>
-                                                        <Link href={`/admin/editor?id=${l.id}`}>
+                                                        <Link href={`/editor?id=${l.id}`}>
                                                             <Button variant="outline" size="sm" className="text-slate-900 hover:text-slate-900 border-slate-200 hover:bg-slate-100">
                                                                 Edit
                                                             </Button>
@@ -283,8 +298,8 @@ export default function DeveloperPage() {
                         </table>
                     </div>
                 </div>
-
             </div>
-        </div>
+            </div>
+        </AuthGuard>
     );
 }

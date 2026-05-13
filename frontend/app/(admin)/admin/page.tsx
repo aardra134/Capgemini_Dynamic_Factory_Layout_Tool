@@ -25,6 +25,7 @@ import {
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { toast } from '@/hooks/use-toast';
+import { mapLayoutList } from '@/lib/api-adapters';
 
 export default function AdminPage() {
   const router = useRouter();
@@ -40,7 +41,8 @@ export default function AdminPage() {
     try {
       const res = await fetch('/api/layouts');
       const data = await res.json();
-      setLayouts(data.filter((l: any) => l.status !== 'draft'));
+      const mapped = mapLayoutList(data);
+      setLayouts(mapped.filter((l: any) => l.status !== 'draft'));
     } catch (error) {
       console.error('Failed to fetch layouts', error);
     }
@@ -52,7 +54,7 @@ export default function AdminPage() {
       await fetch(`/api/layouts/${id}/approve`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ reviewedBy: user?.username || 'Admin' }),
+        body: JSON.stringify({ reviewed_by: user?.username || 'Admin' }),
       });
       await fetchLayouts();
     } finally {
@@ -69,14 +71,14 @@ export default function AdminPage() {
       await fetch(`/api/layouts/${id}/reject`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ reviewedBy: user?.username || 'Admin' }),
+        body: JSON.stringify({ reviewed_by: user?.username || 'Admin' }),
       });
 
       if (comment) {
         await fetch(`/api/layouts/${id}/comment`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ adminComments: comment, reviewedBy: user?.username || 'Admin' }),
+          body: JSON.stringify({ admin_comments: comment, reviewed_by: user?.username || 'Admin' }),
         });
       }
 
@@ -120,7 +122,7 @@ export default function AdminPage() {
       icon: Layout,
       title: 'Layout Editor',
       description: 'Visual drag & drop editor',
-      href: '/admin/editor',
+      href: '/editor',
       color: 'text-purple-600 bg-purple-50',
     },
     {
@@ -133,7 +135,7 @@ export default function AdminPage() {
   ];
 
   return (
-    <AuthGuard>
+    <AuthGuard requiredRole="admin">
       <div className="min-h-screen bg-slate-50">
         {/* Header */}
         <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/80 backdrop-blur-sm">
@@ -210,7 +212,7 @@ export default function AdminPage() {
                     <tr key={layout.id} className="hover:bg-slate-50/50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-2">
-                          <Link target="_blank" href={`/admin/editor?id=${layout.id}`} className="text-sm font-semibold text-indigo-600 hover:text-indigo-800 hover:underline cursor-pointer">
+                          <Link target="_blank" href={`/editor?id=${layout.id}`} className="text-sm font-semibold text-indigo-600 hover:text-indigo-800 hover:underline cursor-pointer">
                             {layout.name}
                           </Link>
                           <button

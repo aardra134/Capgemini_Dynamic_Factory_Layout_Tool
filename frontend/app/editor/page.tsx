@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { LogOut, Factory, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { mapFactoryStructure } from '@/lib/api-adapters';
 
 export default function EditorPage() {
   const router = useRouter();
@@ -30,24 +31,18 @@ export default function EditorPage() {
     const params = new URLSearchParams(window.location.search);
     const id = params.get('id');
 
-    fetch('/api/layouts')
-      .then(res => res.json())
+    const url = id ? `/api/layouts/${id}/view` : '/api/layouts/active';
+
+    fetch(url)
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch layout');
+        return res.json();
+      })
       .then(data => {
-        if (id) {
-          const matched = data.find((l: any) => l.id === id);
-          if (matched) {
-            setLayoutData(matched.factory);
-            setLayoutId(matched.id);
-            setLayoutName(matched.name);
-            return;
-          }
-        }
-        const active = data.find((l: any) => l.isActive) || data[0];
-        if (active) {
-          setLayoutData(active.factory);
-          setLayoutId(active.id);
-          setLayoutName(active.name);
-        }
+        const mapped = mapFactoryStructure(data);
+        setLayoutData(mapped.factory);
+        setLayoutId(mapped.id);
+        setLayoutName(mapped.name);
       })
       .catch(console.error)
       .finally(() => setLoading(false));
@@ -62,11 +57,58 @@ export default function EditorPage() {
     console.log('Factory triggered save:', factory);
     if (layoutId) {
       try {
-        await fetch(`/api/layouts/${layoutId}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ factory })
+        // 1. Prepare workstations array
+        const workstations: any[] = [];
+        factory.areas?.forEach((area: any) => {
+          area.lines?.forEach((line: any) => {
+            line.workCenters?.forEach((wc: any) => {
+              workstations.push({
+                ws_id: parseInt(wc.id),
+                pos_x: wc.x,
+                pos_y: wc.y,
+                width: wc.width,
+                length: wc.height
+              });
+            });
+          });
         });
+
+        // 2. Prepare areas array
+        const areas: any[] = [];
+        factory.areas?.forEach((area: any) => {
+          areas.push({
+            area_id: parseInt(area.id),
+            pos_x: area.x,
+            pos_y: area.y,
+            width: area.width,
+            length: area.height
+          });
+        });
+
+        // Send granular updates
+        if (workstations.length > 0) {
+          await fetch(`/api/layouts/${layoutId}/sync`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ workstations })
+          });
+        }
+
+        if (areas.length > 0) {
+          await fetch(`/api/layouts/${layoutId}/sync-areas`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ areas })
+          });
+        }
+        
+        // Commit version
+        await fetch(`/api/layouts/${layoutId}/commit`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ version_name: factory.name || 'v-saved' })
+        });
+
         console.log('Successfully saved to active layout record.');
       } catch (err) {
         console.error('Failed remotely saving layout:', err);

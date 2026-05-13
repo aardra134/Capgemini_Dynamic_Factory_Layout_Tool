@@ -1180,7 +1180,7 @@ export function GridEditor({ onSave, initialFactory, isAdmin = false, readOnly =
       await fetch(`/api/layouts/${factory.id}/approve`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ reviewedBy: 'Admin' }),
+        body: JSON.stringify({ reviewed_by: 'Admin' }),
       });
       window.location.href = '/admin';
     } catch (err) {
@@ -1194,13 +1194,13 @@ export function GridEditor({ onSave, initialFactory, isAdmin = false, readOnly =
       await fetch(`/api/layouts/${factory.id}/reject`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ reviewedBy: 'Admin' }),
+        body: JSON.stringify({ reviewed_by: 'Admin' }),
       });
       if (factory?.adminComments) {
         await fetch(`/api/layouts/${factory.id}/comment`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ adminComments: factory.adminComments, reviewedBy: 'Admin' }),
+          body: JSON.stringify({ admin_comments: factory.adminComments, reviewed_by: 'Admin' }),
         });
       }
       window.location.href = '/admin';

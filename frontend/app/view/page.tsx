@@ -3,6 +3,7 @@
 import { GridEditor } from '@/components/admin/grid-editor';
 import { Factory } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { mapFactoryStructure } from '@/lib/api-adapters';
 
 export default function ViewPage() {
     const [isClient, setIsClient] = useState(false);
@@ -23,16 +24,15 @@ export default function ViewPage() {
             return;
         }
 
-        fetch('/api/layouts')
-            .then(res => res.json())
+        fetch(`/api/layouts/${id}/view`)
+            .then(res => {
+                if (!res.ok) throw new Error('Layout not found');
+                return res.json();
+            })
             .then(data => {
-                const matched = data.find((l: any) => l.id === id);
-                if (matched) {
-                    setLayoutData(matched.factory);
-                    setLayoutName(matched.name);
-                } else {
-                    setError('Layout not found. Please check the URL and try again.');
-                }
+                const mapped = mapFactoryStructure(data);
+                setLayoutData(mapped.factory);
+                setLayoutName(mapped.name);
             })
             .catch(err => {
                 console.error(err);
