@@ -1,0 +1,15 @@
+factory_id,factory_name,layout_id,layout_name,canvas_width,canvas_length,scale_ratio,layout_version_id,version_number,area_id,area_name,area_pos_x,area_pos_y,area_width,area_length,line_id,line_name,line_pos_x,line_pos_y,line_width,line_length,ws_id,ws_name,ws_sequence,ws_pos_x,ws_pos_y,ws_width,ws_length,machine_id,machine_name,machine_pos_x,machine_pos_y,machine_width,machine_length,flow_id,from_ws_id,to_ws_id,arrow_type,flow_label
+1,Pune SUV Plant,1,Compact_SUV_Assembly,120,80,1,1,1,1,Chassis Assembly,5,5,40,25,1,Chassis Line,8,10,34,15,1,WS_1,1,8,13,5,4,1,Machine_1,9,14,3,2,1.0,1.0,2.0,Conveyor,Vehicle Flow
+1,Pune SUV Plant,1,Compact_SUV_Assembly,120,80,1,1,1,1,Chassis Assembly,5,5,40,25,1,Chassis Line,8,10,34,15,2,WS_2,2,16,13,5,4,2,Machine_2,17,14,3,2,2.0,2.0,3.0,Conveyor,Vehicle Flow
+1,Pune SUV Plant,1,Compact_SUV_Assembly,120,80,1,1,1,1,Chassis Assembly,5,5,40,25,1,Chassis Line,8,10,34,15,3,WS_3,3,24,13,5,4,3,Machine_3,25,14,3,2,3.0,3.0,4.0,Conveyor,Vehicle Flow
+1,Pune SUV Plant,1,Compact_SUV_Assembly,120,80,1,1,1,2,Body Welding,50,5,30,25,2,Welding Line,53,10,24,15,4,WS_4,1,53,13,5,4,4,Machine_4,54,14,3,2,4.0,4.0,5.0,Conveyor,Vehicle Flow
+1,Pune SUV Plant,1,Compact_SUV_Assembly,120,80,1,1,1,2,Body Welding,50,5,30,25,2,Welding Line,53,10,24,15,5,WS_5,2,61,13,5,4,5,Machine_5,62,14,3,2,5.0,5.0,6.0,Conveyor,Vehicle Flow
+1,Pune SUV Plant,1,Compact_SUV_Assembly,120,80,1,1,1,2,Body Welding,50,5,30,25,2,Welding Line,53,10,24,15,6,WS_6,3,69,13,5,4,6,Machine_6,70,14,3,2,6.0,6.0,7.0,Conveyor,Vehicle Flow
+1,Pune SUV Plant,1,Compact_SUV_Assembly,120,80,1,1,1,3,Paint Shop,5,40,35,25,3,Paint Line,8,45,28,15,7,WS_7,1,8,48,5,4,7,Machine_7,9,49,3,2,7.0,7.0,8.0,Conveyor,Vehicle Flow
+1,Pune SUV Plant,1,Compact_SUV_Assembly,120,80,1,1,1,3,Paint Shop,5,40,35,25,3,Paint Line,8,45,28,15,8,WS_8,2,16,48,5,4,8,Machine_8,17,49,3,2,8.0,8.0,9.0,Conveyor,Vehicle Flow
+1,Pune SUV Plant,1,Compact_SUV_Assembly,120,80,1,1,1,3,Paint Shop,5,40,35,25,3,Paint Line,8,45,28,15,9,WS_9,3,24,48,5,4,9,Machine_9,25,49,3,2,9.0,9.0,10.0,Conveyor,Vehicle Flow
+1,Pune SUV Plant,1,Compact_SUV_Assembly,120,80,1,1,1,4,Engine Mounting,50,40,30,20,4,Engine Line,53,45,24,10,10,WS_10,1,53,48,5,4,10,Machine_10,54,49,3,2,10.0,10.0,11.0,Conveyor,Vehicle Flow
+1,Pune SUV Plant,1,Compact_SUV_Assembly,120,80,1,1,1,4,Engine Mounting,50,40,30,20,4,Engine Line,53,45,24,10,11,WS_11,2,61,48,5,4,11,Machine_11,62,49,3,2,11.0,11.0,12.0,Conveyor,Vehicle Flow
+1,Pune SUV Plant,1,Compact_SUV_Assembly,120,80,1,1,1,4,Engine Mounting,50,40,30,20,4,Engine Line,53,45,24,10,12,WS_12,3,69,48,5,4,12,Machine_12,70,49,3,2,12.0,12.0,13.0,Conveyor,Vehicle Flow
+1,Pune SUV Plant,1,Compact_SUV_Assembly,120,80,1,1,1,5,Final Assembly,90,10,25,40,5,Final Line,93,15,18,30,13,WS_13,1,93,18,5,4,13,Machine_13,94,19,3,2,13.0,13.0,14.0,Conveyor,Vehicle Flow
+1,Pune SUV Plant,1,Compact_SUV_Assembly,120,80,1,1,1,5,Final Assembly,90,10,25,40,5,Final Line,93,15,18,30,14,WS_14,2,101,18,5,4,14,Machine_14,102,19,3,2,,,,,

@@ -1,78 +1,73 @@
-# Factory Layout Tool
+# Capgemini Dynamic Factory Layout Tool
 
-A powerful, visual tool for designing, managing, and reviewing factory floor layouts. This application provides a seamless Admin-Developer feedback loop, an auto-layout engine for various workcenter configurations, and precise coordinate controls.
+A full-stack web application designed for interactive visualization, editing, and administration of factory layout blueprints. This application enables developers to upload factory layouts via CSV and allows administrators to review, approve, or reject these layouts through an interactive canvas interface.
 
-## Features
+## Project Structure
 
-- **Interactive Layout Editor**: A blueprint-style visual interface with centered workstation labels and robust boundary constraints.
-- **Auto-Layout Engine**: Automatically arrange workstations in U-Shape, Inverted U-Shape, L-Shape, or Straight line configurations.
-- **Admin Review Mode**: A dedicated mode for admins to review designs, provide persistent feedback via comments, and manage permissions.
-- **Developer Workflow**: Includes version history management, allowing developers to save drafts, revert changes, and promote layouts for administrative review.
-- **Coordinate Control**: A sidebar-based CSV editor for precise manual coordinate adjustments, seamlessly mapped to the canvas.
+This project uses a monorepo-style structure, separating the frontend application from the backend API.
 
-## Tech Stack
-
-- **Framework**: Next.js (React)
-- **Styling**: Tailwind CSS
-- **UI Components**: Radix UI
-- **Language**: TypeScript
+- `frontend/` - Next.js 14 application providing the user interface, canvas editor, and authentication flows.
+- `backend/` - Node.js Express application serving as a REST API connected to a SQL Server database.
 
 ## Prerequisites
 
-Before you begin, ensure you have the following installed:
-- [Node.js](https://nodejs.org/) (v18 or higher)
-- [npm](https://npmjs.com/) or [pnpm](https://pnpm.io/)
+To run this application locally, you must have the following installed:
+- Node.js (v18 or higher)
+- npm or pnpm
+- Microsoft SQL Server Management Studio (SSMS) with a running instance.
 
-## Installation & Setup
+## Backend Setup (Node.js API)
 
-1. **Clone the repository** (if you haven't already):
+1. Navigate to the backend directory:
    ```bash
-   git clone <your-repository-url>
-   cd factory-layout-tool
+   cd backend
    ```
-
-2. **Install dependencies**:
+2. Install dependencies:
    ```bash
    npm install
-   # or if using pnpm
-   pnpm install
    ```
-
-3. **Start the development server**:
+3. Configure the Database:
+   - Ensure your SQL Server instance is running and allows Windows Authentication (or configure SQL credentials).
+   - Verify the `.env` file exists in the `backend/` directory with the appropriate SQL credentials. By default, it uses Windows Auth with:
+     ```env
+     DB_SERVER=localhost\SQLEXPRESS
+     DB_DATABASE=FactoryLayoutDB
+     ```
+4. Start the backend server:
    ```bash
    npm run dev
-   # or
+   ```
+   The backend will run on `http://localhost:4000`.
+
+## Frontend Setup (Next.js Application)
+
+1. Open a new terminal and navigate to the frontend directory:
+   ```bash
+   cd frontend
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   # OR
+   pnpm install
+   ```
+3. Start the Next.js development server:
+   ```bash
+   npm run dev
+   # OR
    pnpm dev
    ```
+   The frontend will run on `http://localhost:3000`. 
+   *Note: The frontend is configured with a proxy rewrite rule to route all `/api/*` requests automatically to `http://localhost:4000/api/*` to avoid CORS issues.*
 
-4. **Access the application**:
-   Open your browser and navigate to `http://localhost:3000`.
+## Features
+- **Role-based Authentication:** Separate views for `Developer` and `Admin`.
+- **Canvas Editor:** Interactive 2D visualization of Workstations, Areas, and Assembly lines using an HTML5 canvas.
+- **CSV Import:** Developers can parse and instantiate an entire factory layout map via CSV structure mapping.
+- **Approval Workflow:** Admins can review pending layouts, drop comments, and approve/reject them directly inside the canvas viewer.
+- **Real-time Synchronization:** Layouts are mapped granularly directly back to the SQL database using specialized REST endpoints.
 
-## Available Scripts
-
-- `npm run dev`: Starts the development server.
-- `npm run build`: Builds the app for production.
-- `npm run start`: Starts the production server.
-- `npm run lint`: Runs ESLint to catch and fix code issues.
-
-## Usage Guide
-
-### Developer Mode
-- Drag and drop workcenters on the grid to adjust the layout.
-- Use the sidebar to manually edit coordinates via the integrated CSV data structure.
-- Utilize the **Auto-Layout** feature to instantly arrange workcenters into predefined shapes.
-- Save drafts and submit versions for Admin review.
-
-### Admin Mode
-- Access the `/admin` route (or through the UI toggle) to enter Admin Review mode.
-- Review submitted layout drafts.
-- Add feedback comments directly onto the layout grid.
-- Approve or reject layout submissions.
-
-## Deployment
-
-This Next.js application can be easily deployed on [Vercel](https://vercel.com/):
-1. Push your code to a GitHub repository.
-2. Import the repository in Vercel.
-3. Vercel will automatically detect the Next.js framework and configure the build settings.
-4. Click "Deploy".
+## Tech Stack
+- **Frontend:** Next.js, React, Tailwind CSS, Lucide Icons
+- **Backend:** Node.js, Express, `mssql` (SQL Server connector), Multer, Papaparse
+- **Database:** Microsoft SQL Server (SSMS)

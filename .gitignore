@@ -1,10 +1,30 @@
-# v0 runtime files (should only exist in preview, not in git)
-__v0_runtime_loader.js
-__v0_devtools.tsx
-__v0_jsx-dev-runtime.ts
-
-# Common ignores
+# Dependencies
 node_modules/
-.next/
-.env*.local
+frontend/node_modules/
+backend/node_modules/
+
+# Next.js build outputs
+frontend/.next/
+frontend/out/
+
+# Environment files (contains secrets — do NOT commit)
+backend/.env
+.env
+.env.local
+.env.*.local
+
+# OS files
 .DS_Store
+Thumbs.db
+
+# Logs
+npm-debug.log*
+pnpm-debug.log*
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# Turbopack cache
+frontend/.turbopack/
